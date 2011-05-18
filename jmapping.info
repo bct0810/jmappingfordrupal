@@ -1,0 +1,9 @@
+name = jMapping
+description = Use Views to implement jQuery jMapping library
+core = 7.x
+package = Views
+dependencies[]  = views
+
+
+files[] = views_plugin_style_views_jmapping.inc
+files[] = views_jmapping_plugin_row_jmappingrows.inc

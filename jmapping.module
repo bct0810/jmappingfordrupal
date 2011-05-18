@@ -1,0 +1,52 @@
+<?php
+/**
+ * Implementation of hook_views_api().
+ */
+function jmapping_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'jmapping'),
+  );
+}
+
+/**
+ * Implementation of template preprocess for the view fields
+ */
+function template_preprocess_jmapping_view_jmappingrows(&$vars) {
+  $view = $vars['view'];
+  $options = $vars['options'];
+  $vars['fields'] = array(); // ensure it's at least an empty array.
+  foreach ($view->field as $id => $field) {
+    $field_output = $view->field[$id]->theme($vars['row']);
+    $object = array();
+    $object['content'] = $field_output;
+
+    // find the option (ie title, description, slide, thumbnail)  for the field
+    foreach ($options as $field_title => $field_label) {
+      if ($field_label == $id) {
+        $object['option'] = $field_title;
+      }
+    }
+    // This is to check if the field has an option. If not ignore.
+    if (count($object) > 1 ) {
+      $vars['fields'][$object['option']]->content = $object['content'];
+      if ($object['option'] == 'title_field') {
+        $vars['fields']['title_field']->content = check_markup($vars['fields']['title_field']->content, $format_id = 'full_html', '', $check = FALSE);
+        $vars['fields']['title_field']->stripped = trim(strip_tags($vars['fields']['title_field']->content));
+      }
+      if ($object['option'] == 'description_field') {
+        $vars['fields']['description_field']->content = check_markup($vars['fields']['description_field']->content, $format_id = 'full_html', '', $check = FALSE);
+      }
+      if ($object['option'] == 'thumbnail_field') {
+        if (preg_match('/(src=")(\S+)(")/', $vars['fields']['thumbnail_field']->content, $thumb_url)) {
+          $vars['fields']['thumbnail_field']->content = $thumb_url['2'];
+        };
+      }
+      if ($object['option'] == 'slide_field') {
+        if (preg_match('/(src=")(\S+)(")/', $vars['fields']['slide_field']->content, $slide_url)) {
+          $vars['fields']['slide_field']->content = $slide_url['2'];
+        }
+      }
+    }
+  }
+}

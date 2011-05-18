@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>jMapping: Usage</title>
+  
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" href="styles.css" type="text/css" media="screen" />
+</head>
+<body>
+  <a href="http://github.com/vigetlabs/jmapping"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+  
+  <div id="container">
+    
+    <div id="header">
+      <h1>jMapping: Usage</h1>
+    </div>
+    
+    <div id="nav">
+      <ul>
+        <li><a href="/jmapping/">About</a></li>
+        <li><span class="active">Usage</span></li>
+        <li><a href="examples/">Examples</a></li>
+      </ul>
+    </div>
+    
+    <div id="content">
+      <p>Download the necessary dependencies and jMapping.</p>
+      <p>Make sure you include the necessary scripts in your page:</p>
+<pre><code>&lt;script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.3&amp;sensor=false"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="markermanager.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="StyledMarker.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="jquery.metadata.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="jquery.jmapping.js"&gt;&lt;/script&gt;
+</code></pre>
+
+      <p>Make sure your HTML has a <code>div</code> element for the Google map, and there is a container element with some locations and their data. The data by default is expected to be on the "data-jmapping" attribute of the location (this can be configured):</p>
+<pre><code>&lt;div id="map"&gt;&lt;/div&gt;
+
+&lt;div id="map-side-bar"&gt;
+  &lt;div class="map-location" data-jmapping="{id: 5, point: {lat: 35.925, lng: -79.053}, category: 'Gas'}"&gt;
+    &lt;a href="#" class="map-link"&gt;Some Place&lt;/a&gt;
+    &lt;div class="info-box"&gt;
+      &lt;p&gt;Some thing for the info box.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="map-location" data-jmapping="{id: 8, point: {lat: 35.935, lng: -79.024}, category: 'Food'}"&gt;
+    &lt;a href="#" class="map-link"&gt;Another Place&lt;/a&gt;
+    &lt;div class="info-box"&gt;
+      &lt;p&gt;Example Text.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+      <p>Then just call the <code>jMapping</code> function on the map element:</p>
+
+<pre><code>$(document).ready(function(){
+  $('#map').jMapping();
+});
+</code></pre>
+
+<br />
+
+    <p>If you need to change the markers on the map, usually for some type of pagination, this can be done by simply updating the content of the "side-bar" container to contain new location data and then calling the update function:</p>
+    
+<pre><code>$('#map-side-bar').load('ajax/path/file.html', nil, function(){
+  $('#map').jMapping('update');
+});</code></pre>
+
+<p><em>OR</em></p>
+
+<pre><code>$('#map-side-bar').load('ajax/path/file.html', nil, function(){
+  $('#map').data('jMapping').update();
+});</code></pre>
+
+<br />
+
+    <h2>Options</h2>
+    <table cellpadding="0" cellspacing="0" class="options">
+      <thead>
+        <tr>
+          <th class="name">Name</th>
+          <th class="description">Description</th>
+          <th class="default">Default</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name"><code>side_bar_selector</code></td>
+          <td class="description">This defines the selector where location items will be searched for within.</td>
+          <td class="default"><code>"#map-side-bar:first"</code></td>
+        </tr>
+        <tr>
+          <td class="name"><code>location_selector</code></td>
+          <td class="description">This defines the selector for location items. This is the element that the metadata needs to be associated with.<br />The plugin will look for items matching this selector inside of the side bar element.</td>
+          <td class="default"><code>".map-location"</code></td>
+        </tr>
+        <tr>
+          <td class="name"><code>link_selector</code></td>
+          <td class="description"><p>This selector defines the link that will be used to "activate" a marker on the map. If info window elements are provided the HTML inside of them will be loaded into the pop up window when these links are clicked. You should set this value to <code>false</code> if you do not wish to use this functionality.</p><p>The plugin will change the href URLs on these links, but they can be set to something meaningful incase the users browser doesn't support Google Maps.<br />These links will be searched for inside of the location elements specified in the <code>location_selector</code>.</p></td>
+          <td class="default"><code>a.map-link</code></td>
+        </tr>
+        <tr>
+          <td class="name"><code>info_window_selector</code></td>
+          <td class="description">This selector defines where the content for the Google Maps info window for each location marker is. This element will be searched for inside of the location elements specified in the <code>location_selector</code>. If no element is found no Info Window will be attached to the marker.</td>
+          <td class="default"><code>".info-box"</code></td>
+        </tr>
+        <tr>
+          <td class="name"><code>default_point</code></td>
+          <td class="description">This point determines the Google Maps location if there are no location elements inside the specified <code>location_selector</code>.</td>
+          <td class="default"><code>{lat: 0.0, lng: 0.0}</code></td>
+        </tr>
+        <tr>
+          <td class="name"><code>metadata_options</code></td>
+          <td class="description">This is the set of options passed to the jQuery metadata function. It defines how the necessary metadata for each location will be searched for. See the <a href="http://docs.jquery.com/Plugins/Metadata/metadata#toptions">metadata plugins docs</a> for more info.</td>
+          <td class="default"><code>{type: "attr", name: "data"}</code></td>
+        </tr>
+        <tr>
+          <td class="name"><code>info_window_max_width</code></td>
+          <td class="description">This specifies what the max width the Google Maps Info Windows can be when a marker is activated.</td>
+          <td class="default"><code>425</code></td>
+        </tr>
+        <tr>
+          <td class="name"><code>map_config</code></td>
+          <td class="description"><p>TThis can be set to a <a href="http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions">MapOptions object</a>. Which is just a normal object <code>{ }</code> with specific properties that become the settings for the map.</p></td>
+          <td class="default"><em>None</em></td>
+        </tr>
+        <tr>
+          <td class="name"><code>category_icon_options</code></td>
+          <td class="description"><p>By default the plugin will use the default Google Maps marker icon. But you can use this option to specify what options to pass to the StyledMarker based on category data associated with the location. It accepts 2 types of values: an object or a function.</p>
+          <p>If the setting is to an object it will take the category data on the location and look for a key on the object that matches and return that value. If there is no value for the supplied category, it will return the value specified in the "default" key.</p>
+          <p>If the setting is set to a function it will call the function and  pass the value for the category data to the function, returning the result. This can be used for more complicated logic and for using something other then just string data in the category, such as an object with multiple data attributes it's self.</p>
+          <p>The object values for the associated category key or the function should return one of three data types:</p>
+          <ol> 
+            <li>A string, this will be used as the image source for the marker icon.</li> 
+            <li>A <a href="http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerImage">google.maps.MarkerImage</a>, this will be used as the icon for the Marker object.</li> 
+            <li>An object that has <a href="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/styledmarker/docs/reference.html#StyledIconOptions" title="StyledMarker v1.0 Reference">valid options for a StyledIcon object</a>.</li> 
+          </ol>
+          </td>
+          <td class="default"><em>None</em></td>
+        </tr>
+        <tr>
+          <td class="name"><code>default_zoom_level</code></td>
+          <td class="description">
+            <p>Use this option to set the default zoom level for your map. Normally, zoom level is set dynamically based on the position of locations being mapped. But, in some cases, like viewing a single mapped location, you may wish to set a default zoom level. Zoom level values should be between 1 and 20. Neighborhood level is approximately 15.</p>
+          </td>
+          <td class="default"><em>None</em></td>
+        </tr>
+        <tr>
+          <td class="name"><code>force_zoom_level</code></td>
+          <td class="description">This will force the map to <strong>always</strong> be rendered at this zoom level.</td>
+          <td class="default"><em>None</em></td>
+        </tr>
+				<tr>
+          <td class="name"><code>always_show_markers</code></td>
+          <td class="description">Set this option to <code>true</code> if you wish to display markers on all zoom levels. (Normally, the markers may only be visible on certain zoom levels, depending on the normal bounds and zoom level of the marker data.)</td>
+          <td class="default"><code>false</code></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <h2 id="object_api">Object API</h2>
+
+    <p>The jMapping API object is available from the &#8220;jMapping&#8221; data value on
+    the selector passed to the original $().jMapping function.</p>
+
+    <p>For example:</p>
+
+    <pre><code>$('#map').jMapping();
+    $('#map').data('jMapping'); // returns the jMapping API object
+    </code></pre>
+
+    <p><strong>The API of that object</strong>:</p>
+
+    <ul>
+    <li><code>gmarkers</code>:
+    <ul>
+    <li>The GMarker objects that have been placed on the map.
+    Stored in an object where the keys are the id&#8217;s are those provided in the metadata</li>
+    </ul></li>
+    <li><code>settings</code>:
+    <ul>
+    <li>The settings for this jMapping instance.</li>
+    </ul></li>
+    <li><code>mapped</code>:
+    <ul>
+    <li>Did the plugin create the map and markers as expected or not.</li>
+    </ul></li>
+    <li><code>map</code>:
+    <ul>
+    <li>the GMap2 Google Map API object.</li>
+    </ul></li>
+    <li><code>markerManager</code>:
+    <ul>
+    <li>The Google Maps MarkerManager object for manipulating groups of markers, has control over all markers on the map.</li>
+    </ul></li>
+    <li><code>gmarkersArray</code>:
+    <ul>
+    <li>Returns an array of all the markers currently on the map.</li>
+    </ul></li>
+    <li><code>getBounds</code>:
+    <ul>
+    <li>The Google Maps GLatLngBounds bounds object for all the markers on the map.</li>
+    </ul></li>
+    <li><code>getPlaces</code>:
+    <ul>
+    <li>Returns the set of jQuery objects for the place DOM Elements.</li>
+    </ul></li>
+    <li><code>getPlacesData</code>:
+    <ul>
+    <li>Returns an array of all the metadata for each place returned by <code>getPlaces</code></li>
+    </ul></li>
+    <li><code>update</code>:
+    <ul>
+    <li>Used to update the map if the HTML DOM for the locations has changed.</li>
+    </ul></li>
+    </ul>
+
+    <h2 id="event_api">Event API</h2>
+
+    <p>There a number of events that fire as jMapping is used.</p>
+
+    <ul>
+    <li><code>beforeMapping.jMapping</code>
+    <ul>
+    <li>This fires immediately before the main functionality of the plugin begins and is passed the settings object.
+    If it returns false the mapping will be canceled.</li>
+    </ul></li>
+    <li><code>afterMapping.jMapping</code>
+    <ul>
+    <li>This fires immediately after the plugins mapping has finished, passes in the jMapping API object.</li>
+    </ul></li>
+    <li><code>beforeUpdate.jMapping</code>
+    <ul>
+    <li>This fires right before the map is updated via the &#8220;update&#8221; method. The jMapping API object is passed to the callback.
+    If the callback returns false the update will be canceled.</li>
+    </ul></li>
+    <li><code>afterUpdate.jMapping</code>
+    <ul>
+    <li>This fires immediately after the map is updated.</li>
+    </ul></li>
+    <li><code>markerCreated.jMapping</code>
+    <ul>
+    <li>This fires right after a map marker is created, the marker object is passed to the callback.</li>
+    </ul></li>
+    </ul>
+    
+    
+    </div>
+      
+    <div class="footer"></div>
+  </div>
+  
+</body>
+</html>

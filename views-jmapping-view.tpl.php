@@ -9,7 +9,6 @@
 $path = drupal_get_path('module', 'jmapping');
 drupal_add_js('http://maps.google.com/maps/api/js?v=3.3&sensor=false');
 drupal_add_js($path . '/js/markermanager.js');
-drupal_add_js($path . '/js/jquery.metadata.js');
 drupal_add_js($path . '/js/jquery.jmapping.js');
 drupal_add_js($path . '/js/jmapping.js');
 drupal_add_css($path . '/css/jmapping.css', $options = array('type' => 'file'));

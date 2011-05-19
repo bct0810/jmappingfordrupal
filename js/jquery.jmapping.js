@@ -97,7 +97,7 @@
           if (doUpdate){
             $(this).data('metadata', false);
           }
-          return $(this).metadata(settings.metadata_options);
+          return $(this).data(settings.metadata_options);
         });
       };
       
@@ -120,7 +120,7 @@
       
       var setupLink = function(place_elm){
         var $place_elm = $(place_elm),
-            location_data = $place_elm.metadata(settings.metadata_options),
+            location_data = $place_elm.data(settings.metadata_options),
             link = $place_elm.find(settings.link_selector);
 
         link.attr('href', ("#" + location_data.id));
@@ -142,7 +142,7 @@
         var $place_elm = $(place_elm), place_data, point, marker, $info_window_elm, 
           info_window;
 
-        place_data = $place_elm.metadata(settings.metadata_options);
+        place_data = $place_elm.data(settings.metadata_options);
         point = $.jMapping.makeGLatLng(place_data.point);
         
         if (settings.category_icon_options){
@@ -266,7 +266,7 @@
       info_window_selector: '.info-box',
       info_window_max_width: 425,
       default_point: {lat: 0.0, lng: 0.0},
-      metadata_options: {type: 'attr', name: 'data-jmapping'}
+      metadata_options: 'jmapping'
     },
     makeGLatLng: function(place_point){
       return new google.maps.LatLng(place_point.lat, place_point.lng);

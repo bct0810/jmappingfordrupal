@@ -12,9 +12,10 @@ function jmapping_views_api() {
 /**
  * Implementation of template preprocess for the view fields
  */
-function template_preprocess_jmapping_view_jmappingrows(&$vars) {
+function template_preprocess_views_jmapping_view_jmappingrows(&$vars) {
   $view = $vars['view'];
   $options = $vars['options'];
+  $data = array();
   $vars['fields'] = array(); // ensure it's at least an empty array.
   foreach ($view->field as $id => $field) {
     $field_output = $view->field[$id]->theme($vars['row']);
@@ -34,19 +35,29 @@ function template_preprocess_jmapping_view_jmappingrows(&$vars) {
         $vars['fields']['title_field']->content = check_markup($vars['fields']['title_field']->content, $format_id = 'full_html', '', $check = FALSE);
         $vars['fields']['title_field']->stripped = trim(strip_tags($vars['fields']['title_field']->content));
       }
-      if ($object['option'] == 'description_field') {
-        $vars['fields']['description_field']->content = check_markup($vars['fields']['description_field']->content, $format_id = 'full_html', '', $check = FALSE);
+      if ($object['option'] == 'address_field') {
+        $vars['fields']['address_field']->content = check_markup($vars['fields']['address_field']->content, $format_id = 'full_html', '', $check = FALSE);
       }
-      if ($object['option'] == 'thumbnail_field') {
-        if (preg_match('/(src=")(\S+)(")/', $vars['fields']['thumbnail_field']->content, $thumb_url)) {
-          $vars['fields']['thumbnail_field']->content = $thumb_url['2'];
-        };
+      if ($object['option'] == 'lat_field') {
+        $data['lat'] = trim(strip_tags($vars['fields']['lat_field']->content));
       }
-      if ($object['option'] == 'slide_field') {
-        if (preg_match('/(src=")(\S+)(")/', $vars['fields']['slide_field']->content, $slide_url)) {
-          $vars['fields']['slide_field']->content = $slide_url['2'];
-        }
+      if ($object['option'] == 'lng_field') {
+        $data['lng'] = trim(strip_tags($vars['fields']['lng_field']->content));
+      }
+      if ($object['option'] == 'nid_field') {
+        $data['nid'] = trim(strip_tags($vars['fields']['nid_field']->content));
       }
     }
   }
+  $metadata = array();
+  if (!empty($data['nid']) || !empty($data['lng']) || !empty($data['lat'])){
+    $metadata = array(
+      'id' => $data['nid'],
+      'point' => array(
+        'lng' => $data['lng'],
+        'lat' => $data['lat'],
+      ),
+    );
+  }
+  $vars['fields']['metadata']->content = json_encode($metadata);
 }
